@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Panel de Usuario - VentasPro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('css/dashboard-user.css') }}">
+</head>
+<body class="bg-[#050615] text-white font-[Poppins]">
+
+<!-- Navbar -->
+<nav class="bg-white bg-opacity-90 backdrop-blur-sm fixed w-full z-30 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <a class="flex items-center space-x-2" href="#">
+                <div class="w-9 h-9 flex items-center justify-center rounded-full bg-[#FF6B3C] text-white font-bold text-lg">VP</div>
+                <span class="text-[#FF6B3C] font-semibold text-xl">VentasPro</span>
+            </a>
+            <ul class="hidden md:flex space-x-6 font-semibold text-sm text-black">
+                @if(Auth::user()->hasRole('admin') || Auth::user()->hasRole('secre'))
+                    <li><a href="{{ route('usuarios.index') }}" class="hover:text-[#FF6B3C] transition">Usuarios</a></li>
+                @endif
+                @if(Auth::user()->hasRole('admin'))
+                    <li><a href="{{ route('usuarios.asignar') }}" class="hover:text-[#FF6B3C] transition">Asignar Roles</a></li>
+                @endif
+                @if(Auth::user()->hasRole('bodega'))
+                    <li><a href="{{ route('categorias.index') }}" class="hover:text-[#FF6B3C] transition">Categorías</a></li>
+                    <li><a href="{{ route('productos.index') }}" class="hover:text-[#FF6B3C] transition">Productos</a></li>
+                @endif
+                @if(Auth::user()->hasRole('cajera'))
+                    <li><a href="{{ route('ventas.index') }}" class="hover:text-[#FF6B3C] transition">Ventas</a></li>
+                    <li><a href="{{ route('ventas.create') }}" class="hover:text-[#FF6B3C] transition">Registrar Venta</a></li>
+                @endif
+            </ul>
+            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+               class="hidden md:inline-flex items-center bg-[#FF6B3C] hover:bg-[#ff7a56] text-white text-sm font-semibold rounded-full px-5 py-2 transition-all duration-200">
+                Salir <i class="fas fa-sign-out-alt ml-2"></i>
+            </a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">@csrf</form>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<header class="">
+    <div class="bg-[#050615]/80 py-12">
+
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col md:flex-row items-center md:items-start gap-10 md:gap-20 animate-fade-in">
+
+    <!-- Imagen Usuario -->
+    <div class="relative w-56 h-56 sm:w-64 sm:h-64">
+        <img src="https://img.freepik.com/vector-premium/circulo-gris-redondo-simple-silueta-humana-sombra-gris-claro-alrededor-circulo_213497-4963.jpg"
+             alt="Usuario" class="rounded-full border-4 border-[#FF6B3C] object-cover w-full h-full shadow-lg transition-transform duration-300 hover:scale-105">
+        <div class="absolute -top-6 -left-6 w-14 h-14 rounded-full bg-[#FF6B3C] animate-bounce"></div>
+        <div class="absolute -bottom-4 -right-4 w-10 h-10 rounded-full bg-[#FFCB7A] animate-pulse"></div>
+    </div>
+
+    <!-- Panel de Usuario -->
+    <section class="flex-1 max-w-2xl space-y-6">
+        <!-- Badge de rol -->
+        <span class="inline-block border border-[#FF6B3C] rounded-full px-3 py-1 text-xs text-[#FF6B3C] font-semibold select-none">
+            {{ Auth::user()->getRoleNames()->first() ?? 'Usuario' }}
+        </span>
+
+        <h2 class="text-2xl sm:text-3xl font-semibold text-white">Bienvenido, {{ Auth::user()->name }}</h2>
+        <p class="text-white/70 text-sm leading-relaxed">
+            Este es tu panel con accesos habilitados según tu rol asignado en el sistema de ventas.
+        </p>
+
+        <div class="bg-[#0B0D1B] rounded-lg p-6 grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8 text-sm text-white/70 shadow-md">
+            <div class="space-y-1">
+                <p><span class="text-[#FF6B3C] font-semibold">Nombre:</span><br>{{ Auth::user()->name }}</p>
+                <p><span class="text-[#FF6B3C] font-semibold">Email:</span><br>{{ Auth::user()->email }}</p>
+            </div>
+            <div class="space-y-1">
+                <p><span class="text-[#FF6B3C] font-semibold">Rol:</span><br>{{ Auth::user()->getRoleNames()->first() }}</p>
+                <p><span class="text-[#FF6B3C] font-semibold">Acceso:</span><br>Sistema de Ventas</p>
+            </div>
+        </div>
+
+        <!-- Botones según rol -->
+        <div class="flex flex-wrap gap-4">
+            @if(Auth::user()->hasRole('admin'))
+                <a href="{{ route('usuarios.index') }}" class="btn-orange">👥 Gestionar usuarios</a>
+                <a href="{{ route('usuarios.asignar') }}" class="btn-outline">🛡 Asignar roles</a>
+            @endif
+
+            @if(Auth::user()->hasRole('secre'))
+                <a href="{{ route('usuarios.index') }}" class="btn-orange">👥 Gestionar usuarios</a>
+            @endif
+
+            @if(Auth::user()->hasRole('bodega'))
+                <a href="{{ route('categorias.index') }}" class="btn-orange">📦 Categorías</a>
+                <a href="{{ route('productos.index') }}" class="btn-outline">🛒 Productos</a>
+            @endif
+
+            @if(Auth::user()->hasRole('cajera'))
+                <a href="{{ route('ventas.index') }}" class="btn-orange">🧾 Mis ventas</a>
+                <a href="{{ route('ventas.create') }}" class="btn-outline">💰 Registrar venta</a>
+            @endif
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+body {
+    scroll-behavior: smooth;
+}
+
+/* Botones animados */
+.btn-orange {
+    @apply inline-flex items-center justify-center px-5 py-2 text-sm font-semibold rounded-full bg-[#FF6B3C] text-white hover:bg-[#ff7a56] transition-all duration-300;
+}
+
+.btn-outline {
+    @apply inline-flex items-center justify-center px-5 py-2 text-sm font-semibold rounded-full border border-[#FF6B3C] text-[#FF6B3C] hover:bg-[#FF6B3C] hover:text-white transition-all duration-300;
+}
+
+/* Animación de entrada */
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+    animation: fade-in 0.8s ease-out forwards;
+}
