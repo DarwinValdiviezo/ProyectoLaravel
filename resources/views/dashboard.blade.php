@@ -269,6 +269,41 @@
                     </div>
                 </div>
             @endif
+
+            <!-- Lista de Ventas (Cajera) -->
+            @if(Auth::user()->hasRole('cajera'))
+                <div class="bg-white/5 backdrop-blur-lg rounded-xl p-6 border border-white/10 shadow-xl hover-scale">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-semibold text-white flex items-center">
+                            <i class="fas fa-cash-register text-[#FF6B3C] mr-3"></i>
+                            Mis Ventas
+                        </h3>
+                        <a href="{{ route('ventas.create') }}" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#FF6B3C] to-[#FF8F6B] text-white rounded-lg hover:from-[#FF8F6B] hover:to-[#FF6B3C] transition-all duration-300 shadow-lg hover:shadow-[#FF6B3C]/50">
+                            <i class="fas fa-plus mr-2"></i> Nueva Venta
+                        </a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr class="text-left border-b border-white/10">
+                                    <th class="pb-3 text-sm font-semibold text-gray-400">ID</th>
+                                    <th class="pb-3 text-sm font-semibold text-gray-400">Fecha</th>
+                                    <th class="pb-3 text-sm font-semibold text-gray-400">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/10">
+                                @foreach($ventas as $venta)
+                                    <tr>
+                                        <td class="py-3">#{{ $venta->id }}</td>
+                                        <td class="py-3">{{ $venta->created_at->format('d/m/Y H:i') }}</td>
+                                        <td class="py-3">${{ number_format($venta->total, 2) }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endif
         </div>
     </main>
 
