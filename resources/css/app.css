@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos para mensajes de error de validación */
+.text-red-500 {
+    color: #ef4444;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.mt-1 {
+    margin-top: 0.25rem;
+}
+
+/* Estilo para campos con error */
+.error {
+    border-color: #ef4444 !important;
+}
+
+/* Estilo para mensajes de error */
+.error-message {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
