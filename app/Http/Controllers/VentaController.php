@@ -33,41 +33,46 @@ class VentaController extends Controller
         try {
             DB::beginTransaction();
 
-            // Crear la venta
-            $venta = Venta::create([
-                'user_id' => auth()->id(),
-                'fecha' => now(),
-            ]);
+            $venta = new Venta();
+            $venta->user_id = auth()->id();
+            $venta->total = 0;
+            $venta->save();
 
-            // Procesar los productos
-            foreach ($request->productos as $productoData) {
-                $producto = Producto::findOrFail($productoData['id']);
-                
-                // Verificar stock nuevamente (doble verificación)
-                if ($productoData['cantidad'] > $producto->stock) {
-                    throw new \Exception("No hay suficiente stock para {$producto->nombre}. Stock disponible: {$producto->stock}");
+            $total = 0;
+            $productos = $request->input('productos');
+            $cantidades = $request->input('cantidades');
+
+            foreach ($productos as $index => $productoId) {
+                $producto = Producto::findOrFail($productoId);
+                $cantidad = $cantidades[$index];
+
+                if ($producto->stock < $cantidad) {
+                    DB::rollBack();
+                    return redirect()->back()->with('error', "Stock insuficiente para el producto {$producto->nombre}. Stock disponible: {$producto->stock}");
                 }
 
-                // Crear el detalle de la venta
-                DetalleVenta::create([
-                    'venta_id' => $venta->id,
-                    'producto_id' => $producto->id,
-                    'cantidad' => $productoData['cantidad'],
-                    'precio_unitario' => $producto->precio,
-                ]);
+                $detalle = new DetalleVenta();
+                $detalle->venta_id = $venta->id;
+                $detalle->producto_id = $productoId;
+                $detalle->cantidad = $cantidad;
+                $detalle->precio_unitario = $producto->precio;
+                $detalle->subtotal = $cantidad * $producto->precio;
+                $detalle->save();
 
-                // Actualizar el stock
-                $producto->decrement('stock', $productoData['cantidad']);
+                $producto->stock -= $cantidad;
+                $producto->save();
+
+                $total += $detalle->subtotal;
             }
 
+            $venta->total = $total;
+            $venta->save();
+
             DB::commit();
-
-            return redirect()->route('ventas.index')
-                ->with('success', 'Venta registrada exitosamente');
-
+            return redirect()->route('ventas.index')->with('success', 'Venta registrada exitosamente');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Error al registrar la venta: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al registrar la venta: ' . $e->getMessage());
         }
     }
 }

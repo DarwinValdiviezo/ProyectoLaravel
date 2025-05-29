@@ -242,7 +242,39 @@
                         error.insertAfter(element);
                     }
                 });
+
+                // Función para mostrar el modal de confirmación
+                window.confirmDelete = function(formId, message) {
+                    if (confirm(message || '¿Está seguro que desea eliminar este registro?')) {
+                        document.getElementById(formId).submit();
+                    }
+                }
             });
         </script>
+
+        <!-- Modal de Confirmación -->
+        <div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full">
+            <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                <div class="mt-3 text-center">
+                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                        <i class="fas fa-exclamation-triangle text-red-600"></i>
+                    </div>
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">Confirmar Eliminación</h3>
+                    <div class="mt-2 px-7 py-3">
+                        <p class="text-sm text-gray-500" id="deleteModalMessage">
+                            ¿Está seguro que desea eliminar este registro?
+                        </p>
+                    </div>
+                    <div class="items-center px-4 py-3">
+                        <button id="deleteConfirmBtn" class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300">
+                            Eliminar
+                        </button>
+                        <button id="deleteCancelBtn" class="ml-3 px-4 py-2 bg-gray-100 text-gray-700 text-base font-medium rounded-md shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

@@ -16,13 +16,15 @@ class VentaRequest extends FormRequest
     {
         return [
             'productos' => ['required', 'array', 'min:1'],
-            'productos.*.id' => ['required', 'exists:productos,id'],
-            'productos.*.cantidad' => [
+            'productos.*' => ['required', 'exists:productos,id'],
+            'cantidades' => ['required', 'array', 'min:1'],
+            'cantidades.*' => [
                 'required',
                 'integer',
                 'min:1',
                 function ($attribute, $value, $fail) {
-                    $productoId = $this->input(str_replace('.cantidad', '.id', $attribute));
+                    $index = explode('.', $attribute)[1];
+                    $productoId = request()->input('productos.' . $index);
                     $producto = Producto::find($productoId);
                     
                     if (!$producto) {
@@ -44,11 +46,14 @@ class VentaRequest extends FormRequest
             'productos.required' => 'Debe seleccionar al menos un producto',
             'productos.array' => 'El formato de productos no es válido',
             'productos.min' => 'Debe seleccionar al menos un producto',
-            'productos.*.id.required' => 'El ID del producto es requerido',
-            'productos.*.id.exists' => 'El producto seleccionado no existe',
-            'productos.*.cantidad.required' => 'La cantidad es requerida',
-            'productos.*.cantidad.integer' => 'La cantidad debe ser un número entero',
-            'productos.*.cantidad.min' => 'La cantidad mínima es 1',
+            'productos.*.required' => 'El ID del producto es requerido',
+            'productos.*.exists' => 'El producto seleccionado no existe',
+            'cantidades.required' => 'Las cantidades son requeridas',
+            'cantidades.array' => 'El formato de cantidades no es válido',
+            'cantidades.min' => 'Debe especificar al menos una cantidad',
+            'cantidades.*.required' => 'La cantidad es requerida',
+            'cantidades.*.integer' => 'La cantidad debe ser un número entero',
+            'cantidades.*.min' => 'La cantidad mínima es 1',
         ];
     }
 } 

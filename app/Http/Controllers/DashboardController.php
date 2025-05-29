@@ -12,7 +12,13 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $data = [];
+        $data = [
+            'usuarios' => collect(),
+            'categorias' => collect(),
+            'productos' => collect(),
+            'ventas' => collect(),
+            'total_ventas' => 0
+        ];
 
         // Datos para admin y secre
         if (auth()->user()->hasRole(['admin', 'secre'])) {
@@ -31,6 +37,7 @@ class DashboardController extends Controller
                 ->where('user_id', auth()->id())
                 ->latest()
                 ->get();
+            $data['total_ventas'] = $data['ventas']->count();
         }
 
         return view('dashboard', $data);

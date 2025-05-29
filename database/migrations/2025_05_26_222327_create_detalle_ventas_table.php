@@ -16,6 +16,8 @@ public function up(): void
         $table->foreignId('venta_id')->constrained()->onDelete('cascade');
         $table->foreignId('producto_id')->constrained()->onDelete('cascade');
         $table->integer('cantidad');
+        $table->decimal('precio_unitario', 8, 2);
+        $table->decimal('subtotal', 10, 2);
         $table->timestamps();
     });
 }
